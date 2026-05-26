@@ -29,6 +29,26 @@ npm start
 
 4. Open `http://localhost:3000`.
 
+## Deploy to Render
+
+This repo includes a root `render.yaml` Blueprint for a Node web service.
+
+1. Push the repo to GitHub.
+2. In Render, connect your GitHub account.
+3. Create a new Blueprint or Web Service from this repository.
+4. If you use the Blueprint flow, Render reads `render.yaml` automatically.
+5. When prompted, set `OPENAI_API_KEY`.
+6. Deploy the service.
+
+The service configuration is:
+
+- runtime: `node`
+- build command: `npm install`
+- start command: `npm start`
+- health check path: `/api/health`
+
+After deploy, Render will give you an `onrender.com` URL over HTTPS, which is better for mobile camera access than a local non-HTTPS host.
+
 ## Important notes
 
 - Camera access in browsers usually requires `localhost` or `https`.
