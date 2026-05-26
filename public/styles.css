@@ -31,7 +31,8 @@ body {
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
@@ -305,10 +306,33 @@ input {
   font-weight: 700;
 }
 
+.field-wrap,
 .range-wrap {
   display: grid;
   gap: 0.4rem;
   font-weight: 700;
+}
+
+.field-wrap select,
+.range-wrap input,
+#imageUpload {
+  width: 100%;
+}
+
+.field-wrap select {
+  padding: 0.85rem;
+  border-radius: 14px;
+  border: 1px solid rgba(24, 33, 38, 0.16);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.assistive-note {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border-radius: 16px;
+  background: rgba(15, 92, 115, 0.08);
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 .status-line {
@@ -321,6 +345,10 @@ input {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+}
+
+.result-grid-hero {
+  margin-bottom: 1rem;
 }
 
 .result-card {

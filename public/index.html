@@ -14,14 +14,16 @@
     <div class="page-shell">
       <header class="hero">
         <p class="eyebrow">Show Me Guide</p>
-        <h1>Camera guidance for paths, surroundings, and grocery items.</h1>
+        <h1>Continuous camera guidance for blind and low-vision users.</h1>
         <p class="hero-copy">
-          Open the camera, point it forward or at a product, and get a spoken
-          explanation designed for blind and low-vision users.
+          Start a guidance session to scan repeatedly, speak the route, vibrate
+          on hazards, and play directional warning tones for walls, stairs, and
+          floor changes.
         </p>
         <div class="hero-note" role="note">
-          Use this as assistance only. Real-world movement still needs human
-          judgment and mobility tools.
+          Browser version: phone volume buttons cannot be captured by a normal
+          web page. This build supports touch, keyboard, and some headset
+          play-pause controls.
         </div>
       </header>
 
@@ -41,7 +43,7 @@
               aria-label="Live camera preview"
             ></video>
             <div class="camera-overlay" aria-hidden="true">
-              <span>Point the camera at the path or item</span>
+              <span>Point the camera ahead or at the product you want</span>
             </div>
           </div>
 
@@ -49,11 +51,23 @@
             <button id="startCamera" class="button button-primary">
               Start Camera
             </button>
-            <button id="stopCamera" class="button button-muted">
-              Stop
+            <button id="guidanceToggle" class="button button-accent">
+              Start Guidance
             </button>
-            <button id="analyzeNow" class="button button-accent">
-              Analyze Now
+            <button id="analyzeNow" class="button button-muted">
+              Analyze Once
+            </button>
+          </div>
+
+          <div class="action-row action-row-tight">
+            <button id="stopCamera" class="button button-muted">
+              Stop Camera
+            </button>
+            <button id="speakAgain" class="button button-primary">
+              Repeat Voice
+            </button>
+            <button id="stopSpeaking" class="button button-muted">
+              Stop Voice
             </button>
           </div>
 
@@ -80,33 +94,66 @@
 
         <section class="panel" aria-labelledby="mode-title">
           <div class="panel-head">
-            <h2 id="mode-title">Mode</h2>
+            <h2 id="mode-title">Guidance Settings</h2>
             <span id="modeBadge" class="pill pill-strong">Path Guide</span>
           </div>
 
           <div class="mode-grid" role="tablist" aria-label="Analysis modes">
-            <button class="mode-card is-active" data-mode="navigation" role="tab" aria-selected="true">
+            <button
+              class="mode-card is-active"
+              data-mode="navigation"
+              role="tab"
+              aria-selected="true"
+            >
               <span class="mode-name">Path Guide</span>
-              <span class="mode-copy">Describe the walkable route and hazards.</span>
+              <span class="mode-copy">
+                Route, walls, steps, floor edges, and obstacles first.
+              </span>
             </button>
-            <button class="mode-card" data-mode="surroundings" role="tab" aria-selected="false">
+            <button
+              class="mode-card"
+              data-mode="surroundings"
+              role="tab"
+              aria-selected="false"
+            >
               <span class="mode-name">Surroundings</span>
-              <span class="mode-copy">Explain important nearby objects and landmarks.</span>
+              <span class="mode-copy">
+                Nearby objects, people, doors, seating, counters, and signs.
+              </span>
             </button>
-            <button class="mode-card" data-mode="grocery" role="tab" aria-selected="false">
+            <button
+              class="mode-card"
+              data-mode="grocery"
+              role="tab"
+              aria-selected="false"
+            >
               <span class="mode-name">Grocery Helper</span>
-              <span class="mode-copy">Identify products, labels, and shelf context.</span>
+              <span class="mode-copy">
+                Product reading, shelf context, and item comparison.
+              </span>
             </button>
           </div>
 
           <div class="settings">
             <label class="toggle">
-              <input id="autoScan" type="checkbox" />
-              <span>Auto scan every 8 seconds</span>
-            </label>
-            <label class="toggle">
               <input id="autoSpeak" type="checkbox" checked />
               <span>Speak results automatically</span>
+            </label>
+            <label class="toggle">
+              <input id="hapticAlerts" type="checkbox" checked />
+              <span>Vibrate for hazards</span>
+            </label>
+            <label class="toggle">
+              <input id="spatialAudio" type="checkbox" checked />
+              <span>Play left-right guidance tones</span>
+            </label>
+            <label class="field-wrap" for="shortcutMode">
+              Shortcut control
+              <select id="shortcutMode">
+                <option value="touch">Touch only</option>
+                <option value="keyboard">Keyboard Space or Enter</option>
+                <option value="headset">Headset play-pause if supported</option>
+              </select>
             </label>
             <label class="range-wrap" for="speechRate">
               Speech rate
@@ -119,25 +166,45 @@
                 value="1"
               />
             </label>
+            <label class="range-wrap" for="cueVolume">
+              Cue volume
+              <input
+                id="cueVolume"
+                type="range"
+                min="0.1"
+                max="1"
+                step="0.1"
+                value="0.5"
+              />
+            </label>
+            <p id="shortcutHint" class="assistive-note">
+              Tip: web browsers cannot bind the phone volume buttons. For true
+              volume-button control this project needs a native mobile app.
+            </p>
           </div>
         </section>
 
         <section class="panel panel-results" aria-labelledby="results-title">
           <div class="panel-head">
-            <h2 id="results-title">Latest Guidance</h2>
+            <h2 id="results-title">Live Guidance</h2>
             <span id="analysisState" class="pill">Idle</span>
           </div>
 
-          <p id="statusLine" class="status-line" aria-live="polite">
-            Start the camera, then tap Analyze Now.
+          <p id="statusLine" class="status-line" aria-live="assertive">
+            Start the camera, then start a guidance session.
           </p>
 
-          <article class="result-card emphasis" aria-live="polite">
-            <h3>Summary</h3>
-            <p id="summaryText">
-              No analysis yet.
-            </p>
-          </article>
+          <div class="result-grid result-grid-hero">
+            <article class="result-card emphasis" aria-live="polite">
+              <h3>Summary</h3>
+              <p id="summaryText">No analysis yet.</p>
+            </article>
+
+            <article class="result-card emphasis" aria-live="polite">
+              <h3>Recommended Direction</h3>
+              <p id="directionText">Waiting for a route.</p>
+            </article>
+          </div>
 
           <div class="result-grid">
             <article class="result-card">
@@ -154,20 +221,19 @@
             </article>
           </div>
 
-          <article class="result-card">
-            <h3>Detected Items</h3>
-            <ul id="itemsList" class="result-list">
-              <li>No objects identified yet.</li>
-            </ul>
-          </article>
-
-          <div class="action-row action-row-tight">
-            <button id="speakAgain" class="button button-primary">
-              Speak Again
-            </button>
-            <button id="stopSpeaking" class="button button-muted">
-              Stop Speech
-            </button>
+          <div class="result-grid">
+            <article class="result-card">
+              <h3>Mobility Cues</h3>
+              <ul id="mobilityList" class="result-list">
+                <li>No directional cues yet.</li>
+              </ul>
+            </article>
+            <article class="result-card">
+              <h3>Detected Items</h3>
+              <ul id="itemsList" class="result-list">
+                <li>No objects identified yet.</li>
+              </ul>
+            </article>
           </div>
         </section>
       </main>

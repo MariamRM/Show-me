@@ -17,18 +17,21 @@ const modePrompts = {
   navigation: [
     "Help a blind user move safely through the area in front of the camera.",
     "Describe the clear path first, then urgent hazards, then the next 1 to 2 safe steps.",
+    "Pay special attention to walls, floor edges, obstacles, steps up, steps down, curbs, doors, and people.",
     "Use relative positions like left, center, right, near, and far.",
     "If you are uncertain, say so plainly and avoid overconfident instructions."
   ].join(" "),
   surroundings: [
     "Explain the nearby surroundings for a blind user.",
     "Name the most important objects, landmarks, signs, doors, seating, people, counters, vehicles, or obstacles that matter.",
+    "Include directional cues when an object is left, center, or right.",
     "Prioritize what is nearest and what affects orientation.",
     "If details are unclear, say that directly."
   ].join(" "),
   grocery: [
     "Act as a careful grocery shopping assistant for a blind user.",
     "Identify visible products, categories, packaging colors, readable labels, and shelf context.",
+    "Use mobility cues for shelf direction and nearby people or obstacles if they matter.",
     "If text is small or uncertain, say it may be inaccurate instead of guessing.",
     "Prioritize the item in the center of the image, then mention nearby alternatives."
   ].join(" ")
@@ -37,7 +40,16 @@ const modePrompts = {
 const responseSchema = {
   type: "object",
   additionalProperties: false,
-  required: ["summary", "spoken_message", "hazards", "guidance", "detected_items", "confidence"],
+  required: [
+    "summary",
+    "spoken_message",
+    "hazards",
+    "guidance",
+    "detected_items",
+    "confidence",
+    "recommended_direction",
+    "mobility_cues"
+  ],
   properties: {
     summary: { type: "string" },
     spoken_message: { type: "string" },
@@ -56,6 +68,50 @@ const responseSchema = {
     confidence: {
       type: "string",
       enum: ["high", "medium", "low"]
+    },
+    recommended_direction: {
+      type: "string",
+      enum: ["left", "center", "right", "stop"]
+    },
+    mobility_cues: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: ["kind", "side", "distance", "urgency", "message"],
+        properties: {
+          kind: {
+            type: "string",
+            enum: [
+              "clear_path",
+              "wall",
+              "obstacle",
+              "step_up",
+              "step_down",
+              "curb",
+              "floor_change",
+              "person",
+              "door",
+              "shelf",
+              "counter",
+              "unknown"
+            ]
+          },
+          side: {
+            type: "string",
+            enum: ["left", "center", "right"]
+          },
+          distance: {
+            type: "string",
+            enum: ["near", "mid", "far"]
+          },
+          urgency: {
+            type: "string",
+            enum: ["high", "medium", "low"]
+          },
+          message: { type: "string" }
+        }
+      }
     }
   }
 };
@@ -142,7 +198,9 @@ async function handleAnalyze(req, res) {
               "Be concise, practical, and safety-first.",
               "Never imply certainty when the image is ambiguous.",
               "Do not mention policy or disclaimers in the result JSON.",
-              "Keep spoken_message under 320 characters."
+              "Keep spoken_message under 320 characters.",
+              "Use mobility_cues for any important wall, obstacle, step, curb, floor change, person, shelf, or counter.",
+              "If there is no safe visible route, set recommended_direction to stop."
             ].join(" ")
           }
         ]
