@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,14 +13,23 @@
   <body>
     <div class="page-shell">
       <header class="hero">
-        <p class="eyebrow">Show Me Guide</p>
-        <h1>Continuous camera guidance for blind and low-vision users.</h1>
-        <p class="hero-copy">
+        <div class="hero-topbar">
+          <p class="eyebrow" id="heroEyebrow">Show Me Guide</p>
+          <label class="language-switch" for="languageSelect">
+            <span id="languageLabel">Language</span>
+            <select id="languageSelect" aria-label="Select language">
+              <option value="en">English</option>
+              <option value="ar">العربية</option>
+            </select>
+          </label>
+        </div>
+        <h1 id="heroTitle">Continuous camera guidance for blind and low-vision users.</h1>
+        <p id="heroCopy" class="hero-copy">
           Start a guidance session to scan repeatedly, speak the route, vibrate
           on hazards, and play directional warning tones for walls, stairs, and
           floor changes.
         </p>
-        <div class="hero-note" role="note">
+        <div id="heroNote" class="hero-note" role="note">
           Browser version: phone volume buttons cannot be captured by a normal
           web page. This build supports touch, keyboard, and some headset
           play-pause controls.
@@ -43,7 +52,7 @@
               aria-label="Live camera preview"
             ></video>
             <div class="camera-overlay" aria-hidden="true">
-              <span>Point the camera ahead or at the product you want</span>
+              <span id="cameraOverlayText">Point the camera ahead or at the product you want</span>
             </div>
           </div>
 
@@ -72,7 +81,7 @@
           </div>
 
           <div class="upload-row">
-            <label for="imageUpload" class="upload-label">
+            <label id="uploadLabel" for="imageUpload" class="upload-label">
               Or choose a photo
             </label>
             <input
@@ -105,8 +114,8 @@
               role="tab"
               aria-selected="true"
             >
-              <span class="mode-name">Path Guide</span>
-              <span class="mode-copy">
+              <span id="modeNavigationName" class="mode-name">Path Guide</span>
+              <span id="modeNavigationCopy" class="mode-copy">
                 Route, walls, steps, floor edges, and obstacles first.
               </span>
             </button>
@@ -116,8 +125,8 @@
               role="tab"
               aria-selected="false"
             >
-              <span class="mode-name">Surroundings</span>
-              <span class="mode-copy">
+              <span id="modeSurroundingsName" class="mode-name">Surroundings</span>
+              <span id="modeSurroundingsCopy" class="mode-copy">
                 Nearby objects, people, doors, seating, counters, and signs.
               </span>
             </button>
@@ -127,8 +136,8 @@
               role="tab"
               aria-selected="false"
             >
-              <span class="mode-name">Grocery Helper</span>
-              <span class="mode-copy">
+              <span id="modeGroceryName" class="mode-name">Grocery Helper</span>
+              <span id="modeGroceryCopy" class="mode-copy">
                 Product reading, shelf context, and item comparison.
               </span>
             </button>
@@ -137,18 +146,18 @@
           <div class="settings">
             <label class="toggle">
               <input id="autoSpeak" type="checkbox" checked />
-              <span>Speak results automatically</span>
+              <span id="autoSpeakLabel">Speak results automatically</span>
             </label>
             <label class="toggle">
               <input id="hapticAlerts" type="checkbox" checked />
-              <span>Vibrate for hazards</span>
+              <span id="hapticAlertsLabel">Vibrate for hazards</span>
             </label>
             <label class="toggle">
               <input id="spatialAudio" type="checkbox" checked />
-              <span>Play left-right guidance tones</span>
+              <span id="spatialAudioLabel">Play left-right guidance tones</span>
             </label>
             <label class="field-wrap" for="shortcutMode">
-              Shortcut control
+              <span id="shortcutControlLabel">Shortcut control</span>
               <select id="shortcutMode">
                 <option value="touch">Touch only</option>
                 <option value="keyboard">Keyboard Space or Enter</option>
@@ -156,7 +165,7 @@
               </select>
             </label>
             <label class="range-wrap" for="speechRate">
-              Speech rate
+              <span id="speechRateLabel">Speech rate</span>
               <input
                 id="speechRate"
                 type="range"
@@ -167,7 +176,7 @@
               />
             </label>
             <label class="range-wrap" for="cueVolume">
-              Cue volume
+              <span id="cueVolumeLabel">Cue volume</span>
               <input
                 id="cueVolume"
                 type="range"
@@ -196,25 +205,25 @@
 
           <div class="result-grid result-grid-hero">
             <article class="result-card emphasis" aria-live="polite">
-              <h3>Summary</h3>
+              <h3 id="summaryHeading">Summary</h3>
               <p id="summaryText">No analysis yet.</p>
             </article>
 
             <article class="result-card emphasis" aria-live="polite">
-              <h3>Recommended Direction</h3>
+              <h3 id="directionHeading">Recommended Direction</h3>
               <p id="directionText">Waiting for a route.</p>
             </article>
           </div>
 
           <div class="result-grid">
             <article class="result-card">
-              <h3>Hazards</h3>
+              <h3 id="hazardsHeading">Hazards</h3>
               <ul id="hazardsList" class="result-list">
                 <li>None reported yet.</li>
               </ul>
             </article>
             <article class="result-card">
-              <h3>Next Guidance</h3>
+              <h3 id="guidanceHeading">Next Guidance</h3>
               <ul id="guidanceList" class="result-list">
                 <li>No guidance yet.</li>
               </ul>
@@ -223,13 +232,13 @@
 
           <div class="result-grid">
             <article class="result-card">
-              <h3>Mobility Cues</h3>
+              <h3 id="mobilityHeading">Mobility Cues</h3>
               <ul id="mobilityList" class="result-list">
                 <li>No directional cues yet.</li>
               </ul>
             </article>
             <article class="result-card">
-              <h3>Detected Items</h3>
+              <h3 id="itemsHeading">Detected Items</h3>
               <ul id="itemsList" class="result-list">
                 <li>No objects identified yet.</li>
               </ul>

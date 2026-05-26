@@ -1,4 +1,5 @@
 const dom = {
+  languageSelect: document.getElementById("languageSelect"),
   camera: document.getElementById("camera"),
   cameraState: document.getElementById("cameraState"),
   startCamera: document.getElementById("startCamera"),
@@ -25,16 +26,199 @@ const dom = {
   modeBadge: document.getElementById("modeBadge"),
   shortcutHint: document.getElementById("shortcutHint"),
   speakAgain: document.getElementById("speakAgain"),
-  stopSpeaking: document.getElementById("stopSpeaking")
+  stopSpeaking: document.getElementById("stopSpeaking"),
+  cameraTitle: document.getElementById("camera-title"),
+  modeTitle: document.getElementById("mode-title"),
+  resultsTitle: document.getElementById("results-title")
 };
 
-const modeLabels = {
-  navigation: "Path Guide",
-  surroundings: "Surroundings",
-  grocery: "Grocery Helper"
+const translations = {
+  en: {
+    lang: "en",
+    dir: "ltr",
+    voiceLang: "en-US",
+    modeLabels: {
+      navigation: "Path Guide",
+      surroundings: "Surroundings",
+      grocery: "Grocery Helper"
+    },
+    sideLabels: { left: "left", center: "center", right: "right" },
+    distanceLabels: { near: "near", mid: "mid", far: "far" },
+    urgencyLabels: { high: "high", medium: "medium", low: "low" },
+    ui: {
+      heroEyebrow: "Show Me Guide",
+      languageLabel: "Language",
+      heroTitle: "Continuous camera guidance for blind and low-vision users.",
+      heroCopy:
+        "Start a guidance session to scan repeatedly, speak the route, vibrate on hazards, and play directional warning tones for walls, stairs, and floor changes.",
+      heroNote:
+        "Browser version: phone volume buttons cannot be captured by a normal web page. This build supports touch, keyboard, and some headset play-pause controls.",
+      cameraTitle: "Live Camera",
+      cameraOn: "Camera on",
+      cameraOff: "Camera off",
+      cameraOverlayText: "Point the camera ahead or at the product you want",
+      startCamera: "Start Camera",
+      stopCamera: "Stop Camera",
+      startGuidance: "Start Guidance",
+      stopGuidance: "Stop Guidance",
+      analyzeNow: "Analyze Once",
+      repeatVoice: "Repeat Voice",
+      stopVoice: "Stop Voice",
+      uploadLabel: "Or choose a photo",
+      modeTitle: "Guidance Settings",
+      modeNavigationName: "Path Guide",
+      modeNavigationCopy: "Route, walls, steps, floor edges, and obstacles first.",
+      modeSurroundingsName: "Surroundings",
+      modeSurroundingsCopy: "Nearby objects, people, doors, seating, counters, and signs.",
+      modeGroceryName: "Grocery Helper",
+      modeGroceryCopy: "Product reading, shelf context, and item comparison.",
+      autoSpeakLabel: "Speak results automatically",
+      hapticAlertsLabel: "Vibrate for hazards",
+      spatialAudioLabel: "Play left-right guidance tones",
+      shortcutControlLabel: "Shortcut control",
+      shortcutTouch: "Touch only",
+      shortcutKeyboard: "Keyboard Space or Enter",
+      shortcutHeadset: "Headset play-pause if supported",
+      speechRateLabel: "Speech rate",
+      cueVolumeLabel: "Cue volume",
+      resultsTitle: "Live Guidance",
+      summaryHeading: "Summary",
+      directionHeading: "Recommended Direction",
+      hazardsHeading: "Hazards",
+      guidanceHeading: "Next Guidance",
+      mobilityHeading: "Mobility Cues",
+      itemsHeading: "Detected Items",
+      idle: "Idle",
+      analyzing: "Analyzing",
+      guidanceOn: "Guidance on",
+      statusInitial: "Start the camera, then start a guidance session.",
+      statusHealthMissing: "Set OPENAI_API_KEY before analysis can work.",
+      statusServerUnreachable: "Server not reachable yet.",
+      statusCameraLive: "Camera is live. You can start a guidance session now.",
+      statusCameraFailed: "Camera access failed. Allow permission or use a photo upload.",
+      statusCameraStopped: "Camera stopped.",
+      statusModeSelected: "{mode} selected.",
+      statusGuidanceStarted: "Guidance session started. Scanning every 4 seconds.",
+      statusGuidanceStopped: "Guidance session stopped.",
+      statusPhotoLoaded: "Photo loaded. Sending it for analysis.",
+      statusNeedInput: "Start the camera or upload a photo first.",
+      statusAnalyzing: "Analyzing {mode}...",
+      statusAnalysisComplete: "Analysis complete.",
+      statusSpeechUnsupported: "Speech output is not supported on this browser.",
+      statusSpeechFailed: "Speech failed in this browser session. Tap Start Guidance again to unlock audio.",
+      shortcutHintTouch:
+        "Touch mode: use the large Start Guidance button. Phone volume buttons cannot be read by a normal web page.",
+      shortcutHintKeyboard:
+        "Keyboard mode: press Space or Enter to start or stop the guidance session.",
+      shortcutHintHeadset:
+        "Headset mode: some browsers support the headset play-pause button. Phone volume buttons still require a native app.",
+      placeholderSummary: "No analysis yet.",
+      placeholderDirection: "Waiting for a route.",
+      placeholderHazards: "No immediate hazards reported.",
+      placeholderGuidance: "No guidance available.",
+      placeholderMobility: "No directional cues yet.",
+      placeholderItems: "No items detected.",
+      directionLeft: "Move slightly left if clear.",
+      directionCenter: "Continue forward through the center.",
+      directionRight: "Move slightly right if clear.",
+      directionStop: "Stop and reassess before moving."
+    }
+  },
+  ar: {
+    lang: "ar",
+    dir: "rtl",
+    voiceLang: "ar-SA",
+    modeLabels: {
+      navigation: "إرشاد الطريق",
+      surroundings: "المحيط",
+      grocery: "مساعد التسوق"
+    },
+    sideLabels: { left: "يسار", center: "الوسط", right: "يمين" },
+    distanceLabels: { near: "قريب", mid: "متوسط", far: "بعيد" },
+    urgencyLabels: { high: "عالي", medium: "متوسط", low: "منخفض" },
+    ui: {
+      heroEyebrow: "شوفني",
+      languageLabel: "اللغة",
+      heroTitle: "إرشاد مستمر بالكاميرا للمكفوفين وضعاف البصر.",
+      heroCopy:
+        "ابدأ جلسة إرشاد ليتم الفحص بشكل متكرر مع نطق الطريق والاهتزاز عند المخاطر وتشغيل نغمات اتجاهية للجدران والدرج وتغيرات الأرضية.",
+      heroNote:
+        "نسخة المتصفح: لا يمكن لصفحة ويب عادية التقاط أزرار الصوت في الهاتف. هذه النسخة تدعم اللمس ولوحة المفاتيح وبعض أزرار سماعات الرأس.",
+      cameraTitle: "الكاميرا المباشرة",
+      cameraOn: "الكاميرا تعمل",
+      cameraOff: "الكاميرا متوقفة",
+      cameraOverlayText: "وجّه الكاميرا إلى الأمام أو إلى المنتج الذي تريده",
+      startCamera: "تشغيل الكاميرا",
+      stopCamera: "إيقاف الكاميرا",
+      startGuidance: "بدء الإرشاد",
+      stopGuidance: "إيقاف الإرشاد",
+      analyzeNow: "تحليل مرة واحدة",
+      repeatVoice: "إعادة الصوت",
+      stopVoice: "إيقاف الصوت",
+      uploadLabel: "أو اختر صورة",
+      modeTitle: "إعدادات الإرشاد",
+      modeNavigationName: "إرشاد الطريق",
+      modeNavigationCopy: "الطريق والجدران والدرج وحواف الأرضية والعوائق أولاً.",
+      modeSurroundingsName: "المحيط",
+      modeSurroundingsCopy: "الأشياء القريبة والأشخاص والأبواب والمقاعد والكاونترات واللافتات.",
+      modeGroceryName: "مساعد التسوق",
+      modeGroceryCopy: "قراءة المنتجات وسياق الرف ومقارنة العناصر.",
+      autoSpeakLabel: "نطق النتائج تلقائياً",
+      hapticAlertsLabel: "اهتزاز عند المخاطر",
+      spatialAudioLabel: "تشغيل نغمات إرشاد يمين ويسار",
+      shortcutControlLabel: "طريقة الاختصار",
+      shortcutTouch: "اللمس فقط",
+      shortcutKeyboard: "المسافة أو إدخال من لوحة المفاتيح",
+      shortcutHeadset: "زر تشغيل السماعة إذا كان مدعوماً",
+      speechRateLabel: "سرعة النطق",
+      cueVolumeLabel: "مستوى نغمات التنبيه",
+      resultsTitle: "الإرشاد المباشر",
+      summaryHeading: "الملخص",
+      directionHeading: "الاتجاه المقترح",
+      hazardsHeading: "المخاطر",
+      guidanceHeading: "الخطوة التالية",
+      mobilityHeading: "إشارات الحركة",
+      itemsHeading: "العناصر المكتشفة",
+      idle: "خامل",
+      analyzing: "جارٍ التحليل",
+      guidanceOn: "الإرشاد يعمل",
+      statusInitial: "شغّل الكاميرا ثم ابدأ جلسة الإرشاد.",
+      statusHealthMissing: "أضف OPENAI_API_KEY قبل أن يعمل التحليل.",
+      statusServerUnreachable: "الخادم غير متاح حالياً.",
+      statusCameraLive: "الكاميرا تعمل الآن. يمكنك بدء جلسة الإرشاد.",
+      statusCameraFailed: "فشل الوصول إلى الكاميرا. اسمح بالإذن أو استخدم رفع صورة.",
+      statusCameraStopped: "تم إيقاف الكاميرا.",
+      statusModeSelected: "تم اختيار {mode}.",
+      statusGuidanceStarted: "بدأت جلسة الإرشاد. سيتم الفحص كل 4 ثوان.",
+      statusGuidanceStopped: "تم إيقاف جلسة الإرشاد.",
+      statusPhotoLoaded: "تم تحميل الصورة. جارٍ إرسالها للتحليل.",
+      statusNeedInput: "شغّل الكاميرا أو ارفع صورة أولاً.",
+      statusAnalyzing: "جارٍ تحليل {mode}...",
+      statusAnalysisComplete: "اكتمل التحليل.",
+      statusSpeechUnsupported: "إخراج الصوت غير مدعوم في هذا المتصفح.",
+      statusSpeechFailed: "فشل الصوت في هذه الجلسة. اضغط بدء الإرشاد مرة أخرى لفتح الصوت.",
+      shortcutHintTouch:
+        "وضع اللمس: استخدم زر بدء الإرشاد الكبير. لا يمكن لصفحة ويب عادية قراءة أزرار الصوت في الهاتف.",
+      shortcutHintKeyboard:
+        "وضع لوحة المفاتيح: اضغط المسافة أو إدخال لبدء جلسة الإرشاد أو إيقافها.",
+      shortcutHintHeadset:
+        "وضع السماعة: بعض المتصفحات تدعم زر تشغيل السماعة. أزرار الصوت في الهاتف ما زالت تحتاج تطبيقاً أصلياً.",
+      placeholderSummary: "لا يوجد تحليل بعد.",
+      placeholderDirection: "بانتظار تحديد الطريق.",
+      placeholderHazards: "لا توجد مخاطر فورية حتى الآن.",
+      placeholderGuidance: "لا توجد تعليمات حالياً.",
+      placeholderMobility: "لا توجد إشارات اتجاهية حتى الآن.",
+      placeholderItems: "لا توجد عناصر مكتشفة.",
+      directionLeft: "تحرك قليلاً إلى اليسار إذا كان الطريق آمناً.",
+      directionCenter: "تابع التقدم عبر المنتصف.",
+      directionRight: "تحرك قليلاً إلى اليمين إذا كان الطريق آمناً.",
+      directionStop: "توقف وأعد التقييم قبل الحركة."
+    }
+  }
 };
 
 const state = {
+  language: "en",
   mode: "navigation",
   stream: null,
   guidanceTimer: null,
@@ -55,10 +239,13 @@ loadVoices();
 configureMediaSession();
 checkHealth();
 updateShortcutHint();
+applyLanguage();
+renderEmptyState();
 
 function bindEvents() {
   document.addEventListener("pointerdown", handleUserGesture, { passive: true });
   document.addEventListener("keydown", handleKeyboardShortcut);
+  dom.languageSelect.addEventListener("change", handleLanguageChange);
 
   dom.startCamera.addEventListener("click", async () => {
     await handleUserGesture();
@@ -129,10 +316,10 @@ async function checkHealth() {
     const response = await fetch("/api/health");
     const data = await response.json();
     if (!data.hasApiKey) {
-      updateStatus("Set OPENAI_API_KEY before analysis can work.");
+      updateStatus(t("statusHealthMissing"));
     }
   } catch {
-    updateStatus("Server not reachable yet.");
+    updateStatus(t("statusServerUnreachable"));
   }
 }
 
@@ -153,11 +340,11 @@ async function startCamera() {
 
     state.stream = stream;
     dom.camera.srcObject = stream;
-    dom.cameraState.textContent = "Camera on";
-    updateStatus("Camera is live. You can start a guidance session now.");
+    dom.cameraState.textContent = t("cameraOn");
+    updateStatus(t("statusCameraLive"));
     return true;
   } catch (error) {
-    updateStatus("Camera access failed. Allow permission or use a photo upload.");
+    updateStatus(t("statusCameraFailed"));
     console.error(error);
     return false;
   }
@@ -174,13 +361,13 @@ function stopCamera() {
 
   state.stream = null;
   dom.camera.srcObject = null;
-  dom.cameraState.textContent = "Camera off";
-  updateStatus("Camera stopped.");
+  dom.cameraState.textContent = t("cameraOff");
+  updateStatus(t("statusCameraStopped"));
 }
 
 function selectMode(mode) {
   state.mode = mode;
-  dom.modeBadge.textContent = modeLabels[mode];
+  dom.modeBadge.textContent = modeLabel(mode);
 
   for (const card of modeCards) {
     const active = card.dataset.mode === mode;
@@ -188,7 +375,7 @@ function selectMode(mode) {
     card.setAttribute("aria-selected", String(active));
   }
 
-  updateStatus(`${modeLabels[mode]} selected.`);
+  updateStatus(formatText(t("statusModeSelected"), { mode: modeLabel(mode) }));
 }
 
 async function toggleGuidanceSession() {
@@ -203,11 +390,11 @@ async function toggleGuidanceSession() {
   }
 
   state.guidanceActive = true;
-  dom.guidanceToggle.textContent = "Stop Guidance";
+  dom.guidanceToggle.textContent = t("stopGuidance");
   dom.guidanceToggle.classList.remove("button-accent");
   dom.guidanceToggle.classList.add("button-primary");
-  dom.analysisState.textContent = "Guidance on";
-  updateStatus("Guidance session started. Scanning every 4 seconds.");
+  dom.analysisState.textContent = t("guidanceOn");
+  updateStatus(t("statusGuidanceStarted"));
 
   await analyzeCurrentView();
   state.guidanceTimer = window.setInterval(() => {
@@ -224,15 +411,15 @@ function stopGuidanceSession() {
   }
 
   if (state.guidanceActive) {
-    updateStatus("Guidance session stopped.");
+    updateStatus(t("statusGuidanceStopped"));
   }
 
   state.guidanceActive = false;
-  dom.guidanceToggle.textContent = "Start Guidance";
+  dom.guidanceToggle.textContent = t("startGuidance");
   dom.guidanceToggle.classList.remove("button-primary");
   dom.guidanceToggle.classList.add("button-accent");
   if (!state.analyzing) {
-    dom.analysisState.textContent = "Idle";
+    dom.analysisState.textContent = t("idle");
   }
 }
 
@@ -256,18 +443,28 @@ function updateShortcutHint() {
   const mode = dom.shortcutMode.value;
   if (mode === "keyboard") {
     dom.shortcutHint.textContent =
-      "Keyboard mode: press Space or Enter to start or stop the guidance session.";
+      t("shortcutHintKeyboard");
     return;
   }
 
   if (mode === "headset") {
     dom.shortcutHint.textContent =
-      "Headset mode: some browsers support the headset play-pause button. Phone volume buttons still require a native app.";
+      t("shortcutHintHeadset");
     return;
   }
 
   dom.shortcutHint.textContent =
-    "Touch mode: use the large Start Guidance button. Phone volume buttons cannot be read by a normal web page.";
+    t("shortcutHintTouch");
+}
+
+function handleLanguageChange() {
+  state.language = dom.languageSelect.value === "ar" ? "ar" : "en";
+  applyLanguage();
+  if (!state.lastAnalysis) {
+    renderEmptyState();
+  } else {
+    renderAnalysis(state.lastAnalysis);
+  }
 }
 
 async function handleUpload(event) {
@@ -288,7 +485,7 @@ async function handleUpload(event) {
     state.lastImage = dataUrl;
     dom.snapshot.src = dataUrl;
     dom.snapshot.hidden = false;
-    updateStatus("Photo loaded. Sending it for analysis.");
+    updateStatus(t("statusPhotoLoaded"));
     await analyzeImage(dataUrl);
   };
 
@@ -299,7 +496,7 @@ async function analyzeCurrentView(options = {}) {
   const image = captureFrame();
   if (!image) {
     if (!options.silentOnEmpty) {
-      updateStatus("Start the camera or upload a photo first.");
+      updateStatus(t("statusNeedInput"));
     }
     return;
   }
@@ -342,8 +539,8 @@ async function analyzeImage(image) {
   state.analyzing = true;
   dom.analyzeNow.disabled = true;
   dom.guidanceToggle.disabled = true;
-  dom.analysisState.textContent = "Analyzing";
-  updateStatus(`Analyzing ${modeLabels[state.mode].toLowerCase()}...`);
+  dom.analysisState.textContent = t("analyzing");
+  updateStatus(formatText(t("statusAnalyzing"), { mode: modeLabel(state.mode) }));
 
   try {
     const response = await fetch("/api/analyze", {
@@ -353,6 +550,7 @@ async function analyzeImage(image) {
       },
       body: JSON.stringify({
         mode: state.mode,
+        language: state.language,
         image
       })
     });
@@ -366,7 +564,7 @@ async function analyzeImage(image) {
     renderAnalysis(data.analysis);
     await sendAssistiveFeedback(data.analysis);
     dom.analysisState.textContent = `Ready - ${data.analysis.confidence}`;
-    updateStatus("Analysis complete.");
+    updateStatus(t("statusAnalysisComplete"));
   } catch (error) {
     dom.analysisState.textContent = "Error";
     updateStatus(error.message || "Analysis failed.");
@@ -381,14 +579,14 @@ async function analyzeImage(image) {
 function renderAnalysis(analysis) {
   dom.summaryText.textContent = analysis.summary;
   dom.directionText.textContent = formatDirection(analysis.recommended_direction);
-  renderList(dom.hazardsList, analysis.hazards, "No immediate hazards reported.");
-  renderList(dom.guidanceList, analysis.guidance, "No guidance available.");
+  renderList(dom.hazardsList, analysis.hazards, t("placeholderHazards"));
+  renderList(dom.guidanceList, analysis.guidance, t("placeholderGuidance"));
   renderList(
     dom.mobilityList,
     (analysis.mobility_cues || []).map(formatMobilityCue),
-    "No directional cues yet."
+    t("placeholderMobility")
   );
-  renderList(dom.itemsList, analysis.detected_items, "No items detected.");
+  renderList(dom.itemsList, analysis.detected_items, t("placeholderItems"));
 
   state.lastSpokenMessage = analysis.spoken_message || analysis.summary;
 }
@@ -405,17 +603,23 @@ function renderList(element, items, fallback) {
 
 function formatDirection(direction) {
   const labels = {
-    left: "Move slightly left if clear.",
-    center: "Continue forward through the center.",
-    right: "Move slightly right if clear.",
-    stop: "Stop and reassess before moving."
+    left: t("directionLeft"),
+    center: t("directionCenter"),
+    right: t("directionRight"),
+    stop: t("directionStop")
   };
 
-  return labels[direction] || "Waiting for a route.";
+  return labels[direction] || t("placeholderDirection");
 }
 
 function formatMobilityCue(cue) {
-  return `${capitalize(cue.kind.replace(/_/g, " "))} ${cue.side}, ${cue.distance}, ${cue.urgency} urgency: ${cue.message}`;
+  const kind = humanizeKind(cue.kind);
+  const side = currentTranslation().sideLabels[cue.side] || cue.side;
+  const distance = currentTranslation().distanceLabels[cue.distance] || cue.distance;
+  const urgency = currentTranslation().urgencyLabels[cue.urgency] || cue.urgency;
+  return state.language === "ar"
+    ? `${kind} جهة ${side}، مسافة ${distance}، أولوية ${urgency}: ${cue.message}`
+    : `${kind} ${side}, ${distance}, ${urgency} urgency: ${cue.message}`;
 }
 
 async function sendAssistiveFeedback(analysis) {
@@ -592,7 +796,7 @@ async function ensureAudioContext() {
 
 async function speak(message) {
   if (!("speechSynthesis" in window) || !message) {
-    updateStatus("Speech output is not supported on this browser.");
+    updateStatus(t("statusSpeechUnsupported"));
     return;
   }
 
@@ -601,14 +805,14 @@ async function speak(message) {
 
   const utterance = new SpeechSynthesisUtterance(message);
   utterance.rate = Number(dom.speechRate.value || 1);
-  utterance.lang = "en-US";
+  utterance.lang = currentTranslation().voiceLang;
   const voice = chooseVoice();
   if (voice) {
     utterance.voice = voice;
   }
 
   utterance.onerror = () => {
-    updateStatus("Speech failed in this browser session. Tap Start Guidance again to unlock audio.");
+    updateStatus(t("statusSpeechFailed"));
   };
 
   window.speechSynthesis.resume();
@@ -621,8 +825,8 @@ function chooseVoice() {
   }
 
   return (
-    state.voices.find((voice) => voice.lang === "en-US") ||
-    state.voices.find((voice) => voice.lang.startsWith("en")) ||
+    state.voices.find((voice) => voice.lang === currentTranslation().voiceLang) ||
+    state.voices.find((voice) => voice.lang.startsWith(currentTranslation().lang)) ||
     state.voices[0]
   );
 }
@@ -637,10 +841,116 @@ function updateStatus(message) {
   dom.statusLine.textContent = message;
 }
 
-function capitalize(value) {
-  return value.charAt(0).toUpperCase() + value.slice(1);
+function humanizeKind(value) {
+  const humanized = value.replace(/_/g, " ");
+  if (state.language === "ar") {
+    const labels = {
+      clear_path: "طريق واضح",
+      wall: "جدار",
+      obstacle: "عائق",
+      step_up: "درجة صعود",
+      step_down: "درجة نزول",
+      curb: "رصيف",
+      floor_change: "تغير في الأرضية",
+      person: "شخص",
+      door: "باب",
+      shelf: "رف",
+      counter: "كاونتر",
+      unknown: "غير معروف"
+    };
+    return labels[value] || humanized;
+  }
+  return humanized.charAt(0).toUpperCase() + humanized.slice(1);
 }
 
 function delay(ms) {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+function currentTranslation() {
+  return translations[state.language];
+}
+
+function t(key) {
+  return currentTranslation().ui[key];
+}
+
+function modeLabel(mode) {
+  return currentTranslation().modeLabels[mode];
+}
+
+function formatText(text, values) {
+  return text.replace(/\{(\w+)\}/g, (_, key) => values[key] ?? "");
+}
+
+function applyLanguage() {
+  const translation = currentTranslation();
+  document.documentElement.lang = translation.lang;
+  document.documentElement.dir = translation.dir;
+  document.body.classList.toggle("is-rtl", translation.dir === "rtl");
+  dom.languageSelect.value = state.language;
+
+  const directMap = {
+    heroEyebrow: "heroEyebrow",
+    languageLabel: "languageLabel",
+    heroTitle: "heroTitle",
+    heroCopy: "heroCopy",
+    heroNote: "heroNote",
+    cameraTitle: "cameraTitle",
+    cameraOverlayText: "cameraOverlayText",
+    startCamera: "startCamera",
+    stopCamera: "stopCamera",
+    guidanceToggle: state.guidanceActive ? "stopGuidance" : "startGuidance",
+    analyzeNow: "analyzeNow",
+    speakAgain: "repeatVoice",
+    stopSpeaking: "stopVoice",
+    uploadLabel: "uploadLabel",
+    modeTitle: "modeTitle",
+    modeNavigationName: "modeNavigationName",
+    modeNavigationCopy: "modeNavigationCopy",
+    modeSurroundingsName: "modeSurroundingsName",
+    modeSurroundingsCopy: "modeSurroundingsCopy",
+    modeGroceryName: "modeGroceryName",
+    modeGroceryCopy: "modeGroceryCopy",
+    autoSpeakLabel: "autoSpeakLabel",
+    hapticAlertsLabel: "hapticAlertsLabel",
+    spatialAudioLabel: "spatialAudioLabel",
+    shortcutControlLabel: "shortcutControlLabel",
+    speechRateLabel: "speechRateLabel",
+    cueVolumeLabel: "cueVolumeLabel",
+    resultsTitle: "resultsTitle",
+    summaryHeading: "summaryHeading",
+    directionHeading: "directionHeading",
+    hazardsHeading: "hazardsHeading",
+    guidanceHeading: "guidanceHeading",
+    mobilityHeading: "mobilityHeading",
+    itemsHeading: "itemsHeading"
+  };
+
+  for (const [id, key] of Object.entries(directMap)) {
+    const element = document.getElementById(id);
+    if (element) {
+      element.textContent = t(key);
+    }
+  }
+
+  dom.shortcutMode.options[0].textContent = t("shortcutTouch");
+  dom.shortcutMode.options[1].textContent = t("shortcutKeyboard");
+  dom.shortcutMode.options[2].textContent = t("shortcutHeadset");
+  dom.modeBadge.textContent = modeLabel(state.mode);
+  dom.cameraState.textContent = state.stream ? t("cameraOn") : t("cameraOff");
+  if (!state.analyzing) {
+    dom.analysisState.textContent = state.guidanceActive ? t("guidanceOn") : t("idle");
+  }
+  updateShortcutHint();
+}
+
+function renderEmptyState() {
+  dom.summaryText.textContent = t("placeholderSummary");
+  dom.directionText.textContent = t("placeholderDirection");
+  renderList(dom.hazardsList, [], t("placeholderHazards"));
+  renderList(dom.guidanceList, [], t("placeholderGuidance"));
+  renderList(dom.mobilityList, [], t("placeholderMobility"));
+  renderList(dom.itemsList, [], t("placeholderItems"));
+  updateStatus(t("statusInitial"));
 }

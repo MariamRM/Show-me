@@ -46,6 +46,13 @@ select {
   padding: 1.5rem 1.75rem 2rem;
 }
 
+.hero-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
 .eyebrow {
   margin: 0 0 0.6rem;
   font-size: 0.92rem;
@@ -53,6 +60,21 @@ select {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--accent-strong);
+}
+
+.language-switch {
+  display: inline-grid;
+  gap: 0.35rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.language-switch select {
+  min-width: 8.5rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 14px;
+  border: 1px solid rgba(24, 33, 38, 0.16);
+  background: rgba(255, 255, 255, 0.82);
 }
 
 .hero h1,
@@ -379,6 +401,39 @@ select {
   line-height: 1.6;
 }
 
+body.is-rtl {
+  direction: rtl;
+}
+
+body.is-rtl .hero,
+body.is-rtl .panel,
+body.is-rtl .result-card,
+body.is-rtl .mode-card,
+body.is-rtl .status-line,
+body.is-rtl .hero-copy,
+body.is-rtl .assistive-note {
+  text-align: right;
+}
+
+body.is-rtl .panel-head,
+body.is-rtl .hero-topbar {
+  flex-direction: row-reverse;
+}
+
+body.is-rtl .toggle {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+body.is-rtl .action-row {
+  justify-content: flex-end;
+}
+
+body.is-rtl .result-list {
+  padding-left: 0;
+  padding-right: 1.2rem;
+}
+
 @media (max-width: 900px) {
   .app-grid {
     grid-template-columns: 1fr;
@@ -395,5 +450,14 @@ select {
 
   .hero h1 {
     max-width: 100%;
+  }
+
+  .hero-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  body.is-rtl .hero-topbar {
+    align-items: flex-end;
   }
 }

@@ -174,6 +174,7 @@ async function handleAnalyze(req, res) {
 
   const mode = typeof body.mode === "string" ? body.mode : "navigation";
   const image = typeof body.image === "string" ? body.image : "";
+  const language = body.language === "ar" ? "ar" : "en";
 
   if (!modePrompts[mode]) {
     sendJson(res, 400, { error: "Unsupported mode." });
@@ -200,7 +201,10 @@ async function handleAnalyze(req, res) {
               "Do not mention policy or disclaimers in the result JSON.",
               "Keep spoken_message under 320 characters.",
               "Use mobility_cues for any important wall, obstacle, step, curb, floor change, person, shelf, or counter.",
-              "If there is no safe visible route, set recommended_direction to stop."
+              "If there is no safe visible route, set recommended_direction to stop.",
+              language === "ar"
+                ? "Write every user-facing string in Arabic."
+                : "Write every user-facing string in English."
             ].join(" ")
           }
         ]
@@ -260,6 +264,7 @@ async function handleAnalyze(req, res) {
 
   sendJson(res, 200, {
     mode,
+    language,
     model,
     analysis: parsed
   });
