@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Accessible camera guide for blind and low-vision users."
+    />
+    <title>Show Me Guide</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <p class="eyebrow">Show Me Guide</p>
+        <h1>Camera guidance for paths, surroundings, and grocery items.</h1>
+        <p class="hero-copy">
+          Open the camera, point it forward or at a product, and get a spoken
+          explanation designed for blind and low-vision users.
+        </p>
+        <div class="hero-note" role="note">
+          Use this as assistance only. Real-world movement still needs human
+          judgment and mobility tools.
+        </div>
+      </header>
+
+      <main class="app-grid">
+        <section class="panel panel-camera" aria-labelledby="camera-title">
+          <div class="panel-head">
+            <h2 id="camera-title">Live Camera</h2>
+            <span id="cameraState" class="pill">Camera off</span>
+          </div>
+
+          <div class="camera-stage">
+            <video
+              id="camera"
+              playsinline
+              autoplay
+              muted
+              aria-label="Live camera preview"
+            ></video>
+            <div class="camera-overlay" aria-hidden="true">
+              <span>Point the camera at the path or item</span>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button id="startCamera" class="button button-primary">
+              Start Camera
+            </button>
+            <button id="stopCamera" class="button button-muted">
+              Stop
+            </button>
+            <button id="analyzeNow" class="button button-accent">
+              Analyze Now
+            </button>
+          </div>
+
+          <div class="upload-row">
+            <label for="imageUpload" class="upload-label">
+              Or choose a photo
+            </label>
+            <input
+              id="imageUpload"
+              type="file"
+              accept="image/*"
+              aria-label="Choose a photo for analysis"
+            />
+          </div>
+
+          <canvas id="captureCanvas" hidden></canvas>
+          <img
+            id="snapshot"
+            class="snapshot"
+            alt="Latest captured frame"
+            hidden
+          />
+        </section>
+
+        <section class="panel" aria-labelledby="mode-title">
+          <div class="panel-head">
+            <h2 id="mode-title">Mode</h2>
+            <span id="modeBadge" class="pill pill-strong">Path Guide</span>
+          </div>
+
+          <div class="mode-grid" role="tablist" aria-label="Analysis modes">
+            <button class="mode-card is-active" data-mode="navigation" role="tab" aria-selected="true">
+              <span class="mode-name">Path Guide</span>
+              <span class="mode-copy">Describe the walkable route and hazards.</span>
+            </button>
+            <button class="mode-card" data-mode="surroundings" role="tab" aria-selected="false">
+              <span class="mode-name">Surroundings</span>
+              <span class="mode-copy">Explain important nearby objects and landmarks.</span>
+            </button>
+            <button class="mode-card" data-mode="grocery" role="tab" aria-selected="false">
+              <span class="mode-name">Grocery Helper</span>
+              <span class="mode-copy">Identify products, labels, and shelf context.</span>
+            </button>
+          </div>
+
+          <div class="settings">
+            <label class="toggle">
+              <input id="autoScan" type="checkbox" />
+              <span>Auto scan every 8 seconds</span>
+            </label>
+            <label class="toggle">
+              <input id="autoSpeak" type="checkbox" checked />
+              <span>Speak results automatically</span>
+            </label>
+            <label class="range-wrap" for="speechRate">
+              Speech rate
+              <input
+                id="speechRate"
+                type="range"
+                min="0.7"
+                max="1.3"
+                step="0.1"
+                value="1"
+              />
+            </label>
+          </div>
+        </section>
+
+        <section class="panel panel-results" aria-labelledby="results-title">
+          <div class="panel-head">
+            <h2 id="results-title">Latest Guidance</h2>
+            <span id="analysisState" class="pill">Idle</span>
+          </div>
+
+          <p id="statusLine" class="status-line" aria-live="polite">
+            Start the camera, then tap Analyze Now.
+          </p>
+
+          <article class="result-card emphasis" aria-live="polite">
+            <h3>Summary</h3>
+            <p id="summaryText">
+              No analysis yet.
+            </p>
+          </article>
+
+          <div class="result-grid">
+            <article class="result-card">
+              <h3>Hazards</h3>
+              <ul id="hazardsList" class="result-list">
+                <li>None reported yet.</li>
+              </ul>
+            </article>
+            <article class="result-card">
+              <h3>Next Guidance</h3>
+              <ul id="guidanceList" class="result-list">
+                <li>No guidance yet.</li>
+              </ul>
+            </article>
+          </div>
+
+          <article class="result-card">
+            <h3>Detected Items</h3>
+            <ul id="itemsList" class="result-list">
+              <li>No objects identified yet.</li>
+            </ul>
+          </article>
+
+          <div class="action-row action-row-tight">
+            <button id="speakAgain" class="button button-primary">
+              Speak Again
+            </button>
+            <button id="stopSpeaking" class="button button-muted">
+              Stop Speech
+            </button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "show-me-guide",
+  "version": "1.0.0",
+  "description": "Accessible camera guide web app for scene, path, and grocery explanations.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
